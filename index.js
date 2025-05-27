@@ -1,11 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
 
 const app = express();
-app.use(express.json());
+const PORT = process.env.PORT || 3000;
 
-const PORT = 3000;
+// ✅ Enable CORS for all origins (adjust if you want to restrict to specific domain)
+app.use(cors());
+
+// Enable JSON body parsing
+app.use(express.json());
 
 // Load sensitive data from .env
 const NOWPAYMENTS_API_KEY = process.env.NOWPAYMENTS_API_KEY;
@@ -50,7 +55,7 @@ app.post('/create-invoice', async (req, res) => {
   }
 });
 
-// IPN handler for NOWPayments
+// Handle IPN (Instant Payment Notification) callbacks from NOWPayments
 app.post('/payment-notification', (req, res) => {
   console.log('Received NOWPayments notification:', req.body);
   res.status(200).send('OK');
